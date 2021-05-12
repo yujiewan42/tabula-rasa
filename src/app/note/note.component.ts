@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
+interface Note {
+  entities: string[];
+  note: string;
+}
 @Component({
   selector: 'app-note',
   templateUrl: './note.component.html',
@@ -7,9 +13,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NoteComponent implements OnInit {
 
-  constructor() { }
+  notesCollection: AngularFirestoreCollection<Note>;
+  notes: Observable<Note[]>
+
+  constructor(private firestore: AngularFirestore) {
+  }
 
   ngOnInit(): void {
+    this.notesCollection = this.firestore.collection('notes');
+
+    this.notes = this.notesCollection.valueChanges();
   }
 
 }
